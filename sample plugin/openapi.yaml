@@ -1,0 +1,35 @@
+openapi: 3.0.1
+info:
+  title: RFP Plugin
+  description: A plugin that answers questions based on the RFP data returned.  Most any question that mentions an rfp should be routed here.
+  version: 'v1'
+servers:
+  - url: http://localhost:5003
+paths:
+  /search:
+    get:
+        operationId: search
+        summary: Search for an answer within the RFP Documents
+        parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+          description: The question being asked
+        responses:
+          "200":
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/searchResponse'
+components:
+  schemas:
+    searchResponse:
+      type: object
+      properties:
+        response:
+          type: string
+          description: The response or answer to the query.
+          
+    
