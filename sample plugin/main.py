@@ -5,6 +5,7 @@ import quart_cors
 from quart import request
 import requests
 from dotenv import dotenv_values
+import re
 
 config = dotenv_values(".env")
 
@@ -18,9 +19,10 @@ async def search():
     url = config.get("OPENAI_URL")
     myobj = {'dataSources': [{'type':'AzureCognitiveSearch','parameters':{'endpoint':config.get("COGSEARCH_ENDPOINT"), 'key':config.get("COGSEARCH_APIKEY"), 'indexName':config.get("COGSEARCH_INDEX")}}],
             'messages':[{'role':'user', 'content':question}]}
-    headers = {'ContentType':'application/json','api-key':config.get("OPENAI_URL")}
+    headers = {'ContentType':'application/json','api-key':config.get("OPENAI_APIKEY")}
     x = requests.post(url, json = myobj, headers=headers)
-    response = json.loads(x.content)
+    jsonOut = json.loads(x.content)
+    response = jsonOut['choices'][0]['messages'][1]['content'] + '\n' + 'Citations: ' + jsonOut['choices'][0]['messages'][0]['content']
     
     return quart.Response(response=json.dumps({'response':response}), status=200)
 
